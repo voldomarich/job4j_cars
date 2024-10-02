@@ -7,14 +7,13 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import ru.job4j.cars.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
 public class HibernateRepository implements UserRepository {
 
-    private final SessionFactory sf;
+    private final SessionFactory sessionFactory;
 
     /**
      * Сохранить в базе.
@@ -22,14 +21,16 @@ public class HibernateRepository implements UserRepository {
      * @return пользователь с id.
      */
     public User create(User user) {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        try (session) {
-            session.save(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                session.save(user);
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null && transaction.getStatus().canRollback()) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
             }
         }
         return user;
@@ -40,18 +41,21 @@ public class HibernateRepository implements UserRepository {
      * @param user пользователь.
      */
     public void update(User user) {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.createQuery(
-                            "UPDATE User SET login = :fLogin WHERE id = :fId")
-                    .setParameter("fLogin", "new login")
-                    .setParameter("fId", user.getId())
-                    .executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                session.createQuery(
+                                "UPDATE User u SET u.login = :fLogin, u.password = :fPassword WHERE u.id = :fId")
+                        .setParameter("fLogin", "new login")
+                        .setParameter("fPassword", "new password")
+                        .setParameter("fId", user.getId())
+                        .executeUpdate();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null && transaction.getStatus().canRollback()) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
             }
         }
     }
@@ -61,18 +65,19 @@ public class HibernateRepository implements UserRepository {
      * @param userId ID
      */
     public void delete(int userId) {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.beginTransaction();
-            session.createQuery(
-                            "DELETE User WHERE id = :fId")
-                    .setParameter("fId", userId)
-                    .executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                session.createQuery(
+                                "DELETE User u WHERE u.id = :fId")
+                        .setParameter("fId", userId)
+                        .executeUpdate();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null && transaction.getStatus().canRollback()) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
             }
         }
     }
@@ -82,19 +87,10 @@ public class HibernateRepository implements UserRepository {
      * @return список пользователей.
      */
     public List<User> findAllOrderById() {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        List<User> result = new ArrayList<>();
-        try {
-            result = session.createQuery("FROM User order by id ASC", User.class)
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("FROM User u order by u.id ASC", User.class)
                     .getResultList();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
         }
-        return result;
     }
 
     /**
@@ -102,21 +98,12 @@ public class HibernateRepository implements UserRepository {
      * @return пользователь.
      */
     public Optional<User> findById(int userId) {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        Optional<User> result = Optional.empty();
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery(
-                    "from User as i where i.id = :fId", User.class);
+                    "from User u where u.id = :fId", User.class);
             query.setParameter("fId", userId);
-            result = query.uniqueResultOptional();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            return query.uniqueResultOptional();
         }
-        return result;
     }
 
     /**
@@ -125,21 +112,12 @@ public class HibernateRepository implements UserRepository {
      * @return список пользователей.
      */
     public List<User> findByLikeLogin(String key) {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        List<User> result = new ArrayList<>();
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery(
-                    "from User as i where i.login = :fLogin", User.class);
+                    "from User u where u.login LIKE :fLogin", User.class);
             query.setParameter("fLogin", "%" + key + "%");
-            result = query.list();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            return query.list();
         }
-        return result;
     }
 
     /**
@@ -148,20 +126,11 @@ public class HibernateRepository implements UserRepository {
      * @return Optional or user.
      */
     public Optional<User> findByLogin(String login) {
-        Session session = sf.openSession();
-        Transaction transaction = session.beginTransaction();
-        Optional<User> result = Optional.empty();
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery(
-                    "from User as i where i.login = :fLogin", User.class);
+                    "from User u where u.login = :fLogin", User.class);
             query.setParameter("fLogin", login);
-            result = query.uniqueResultOptional();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            return query.uniqueResultOptional();
         }
-        return result;
     }
 }

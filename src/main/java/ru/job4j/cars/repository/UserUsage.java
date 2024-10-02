@@ -10,28 +10,67 @@ public class UserUsage {
     public static void main(String[] args) {
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
-        try (SessionFactory sf = new MetadataSources(registry)
+        try (SessionFactory sessionFactory = new MetadataSources(registry)
                 .buildMetadata().buildSessionFactory()) {
-            var userRepository = new HibernateRepository(sf);
+            var userRepository = new HibernateRepository(sessionFactory);
+
             var user = new User();
             user.setLogin("admin");
             user.setPassword("admin");
             userRepository.create(user);
+            System.out.println();
+
+            System.out.println("findAllOrderById");
             userRepository.findAllOrderById()
                     .forEach(System.out::println);
-            userRepository.findByLikeLogin("e")
+            System.out.println();
+
+            System.out.println("findByLikeLogin");
+            userRepository.findByLikeLogin("ej")
                     .forEach(System.out::println);
+            System.out.println();
+
+            System.out.println("findByLikeLogin");
+            userRepository.findByLikeLogin("adm")
+                    .forEach(System.out::println);
+            System.out.println();
+
+            System.out.println("findById");
             userRepository.findById(user.getId())
                     .ifPresent(System.out::println);
+            System.out.println();
+
+            System.out.println("findByLogin");
             userRepository.findByLogin("admin")
                     .ifPresent(System.out::println);
+            System.out.println();
+
             user.setPassword("password");
             userRepository.update(user);
+            System.out.println();
+
+            System.out.println("findByIdAfterUpdating");
             userRepository.findById(user.getId())
                     .ifPresent(System.out::println);
+
             userRepository.delete(user.getId());
+            System.out.println();
+
+            System.out.println("findAllByIdAfterDeleting");
             userRepository.findAllOrderById()
                     .forEach(System.out::println);
+            System.out.println();
+
+            var user2 = new User();
+            user2.setLogin("login2");
+            user2.setPassword("password2");
+            userRepository.create(user2);
+            System.out.println();
+
+            System.out.println("findAllByIdAfterRecreating");
+            userRepository.findAllOrderById()
+                    .forEach(System.out::println);
+
         } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
