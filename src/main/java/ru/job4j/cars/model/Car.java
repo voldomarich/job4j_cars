@@ -6,23 +6,24 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "auto_post")
+@Table(name = "auto_car")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
-    private String description;
-    private LocalDateTime created = LocalDateTime.now();
+    private String name;
+    private int engineId;
 
     @ManyToOne
     @JoinColumn(name = "auto_user_id")
@@ -40,7 +41,14 @@ public class Post {
     )
     private List<User> participates = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "car_id", foreignKey = @ForeignKey(name = "car_id_fk"))
-    private Car car;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "history_owner", joinColumns = {
+            @JoinColumn(name = "car_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "owner_id", nullable = false, updatable = false)})
+    private Set<Owner> owners = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 }

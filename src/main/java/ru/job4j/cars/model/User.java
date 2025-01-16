@@ -12,4 +12,7 @@ public class User {
     private int id;
     private String login;
     private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Owner owner;
 }
