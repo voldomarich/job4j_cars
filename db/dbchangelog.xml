@@ -16,4 +16,5 @@
     <include file="scripts/009_create_auto_history_owners.sql" relativeToChangelogFile="true"/>
     <include file="scripts/010_create_auto_history.sql" relativeToChangelogFile="true"/>
     <include file="scripts/011_alter_tables_car_owner.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/012_create_auto_image.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
