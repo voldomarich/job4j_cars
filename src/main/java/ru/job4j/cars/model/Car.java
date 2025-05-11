@@ -22,7 +22,7 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
-    private String name;
+    private String brand;
     private int engineId;
 
     @ManyToOne

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Post {
     @EqualsAndHashCode.Include
     private int id;
     private String description;
+    private Image photo;
     private LocalDateTime created = LocalDateTime.now();
 
     @ManyToOne
