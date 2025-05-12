@@ -11,10 +11,9 @@ import ru.job4j.cars.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PostRepositoryTest {
 
@@ -104,5 +103,57 @@ class PostRepositoryTest {
 
         List<Post> bmwPosts = postRepository.findPostsByCarBrand("BMW");
         assertEquals(1, bmwPosts.size());
+    }
+
+    @Test
+    void testCreate() {
+        User user = session.get(User.class, 1);
+        Car car = session.get(Car.class, 1);
+
+        Post newPost = new Post();
+        newPost.setDescription("New post");
+        newPost.setCreated(LocalDateTime.now());
+        newPost.setUser(user);
+        newPost.setCar(car);
+
+        Post savedPost = postRepository.create(newPost);
+        assertNotNull(savedPost);
+        assertTrue(savedPost.getId() > 0);
+
+        Post found = session.get(Post.class, savedPost.getId());
+        assertEquals("New post", found.getDescription());
+    }
+
+    @Test
+    void testUpdate() {
+        Post post = postRepository.findAll().get(0);
+        post.setDescription("Updated description");
+        postRepository.update(post);
+
+        Post updated = session.get(Post.class, post.getId());
+        assertEquals("Updated description", updated.getDescription());
+    }
+
+    @Test
+    void testDelete() {
+        Post post = postRepository.findAll().get(0);
+        int id = post.getId();
+        postRepository.delete(id);
+        Post deleted = session.get(Post.class, id);
+        assertNull(deleted);
+    }
+
+    @Test
+    void testFindById() {
+        Post post = postRepository.findAll().get(0);
+        Optional<Post> result = postRepository.findById(post.getId());
+        assertTrue(result.isPresent());
+        assertEquals(post.getId(), result.get().getId());
+    }
+
+    @Test
+    void testFindAll() {
+        List<Post> posts = postRepository.findAll();
+        assertEquals(2, posts.size());
     }
 }

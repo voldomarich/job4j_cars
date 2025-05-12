@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 @AllArgsConstructor
 public class PostRepository {
+
     private final CrudRepository crudRepository;
 
     public List<Post> findPostsFromLastDay() {
