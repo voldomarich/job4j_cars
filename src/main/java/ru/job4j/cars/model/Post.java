@@ -45,4 +45,8 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id", foreignKey = @ForeignKey(name = "car_id_fk"))
     private Car car;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
+    private List<Image> photos;
 }

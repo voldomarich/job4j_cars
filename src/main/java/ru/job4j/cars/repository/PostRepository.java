@@ -24,8 +24,10 @@ public class PostRepository {
     }
 
     public List<Post> findPostsWithPhoto() {
-        String hql = "FROM Post p WHERE p.photo IS NOT NULL";
-        return crudRepository.query(hql, Post.class);
+        return crudRepository.tx(session -> {
+            String hql = "SELECT DISTINCT p FROM Post p JOIN p.photos ph";
+            return session.createQuery(hql, Post.class).getResultList();
+        });
     }
 
     public List<Post> findPostsByCarBrand(String brand) {
