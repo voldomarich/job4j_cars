@@ -4,3 +4,4 @@ CREATE TABLE IF NOT EXISTS auto_image (
     path  VARCHAR(255) NOT NULL,
     post_id int references auto_post(id)
 );
+
