@@ -24,7 +24,7 @@ class PostRepositoryTest {
     @BeforeAll
     static void setUpFactory() {
         sessionFactory = new Configuration()
-                .configure("hibernate.cfg.xml")
+                .configure("hibernate_test.cfg.xml")
                 .buildSessionFactory();
     }
 
