@@ -46,10 +46,12 @@ public class PostRepository {
     }
 
     public void delete(int carId) {
-        crudRepository.run(
-                "delete from Post where id = :fId",
-                Map.of("fId", carId)
-        );
+        crudRepository.run(session -> {
+            Post post = session.get(Post.class, carId);
+            if (post != null) {
+                session.delete(post);
+            }
+        });
     }
 
     public Optional<Post> findById(int carId) {

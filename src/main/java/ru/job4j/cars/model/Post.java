@@ -15,13 +15,14 @@ import java.util.List;
 @Entity
 @Table(name = "auto_post")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
     private String description;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "photo_id")
     private Image photo;
     private LocalDateTime created = LocalDateTime.now();
 
@@ -41,11 +42,11 @@ public class Post {
     )
     private List<User> participates = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", foreignKey = @ForeignKey(name = "car_id_fk"))
     private Car car;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id")
-    private List<Image> photos;
+    private List<Image> photos = new ArrayList<>();
 }

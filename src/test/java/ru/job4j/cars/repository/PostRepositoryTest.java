@@ -21,15 +21,11 @@ class PostRepositoryTest {
     private Session session;
     private PostRepository postRepository;
 
-    @BeforeAll
-    static void setUpFactory() {
+    @BeforeEach
+    void setUp() {
         sessionFactory = new Configuration()
                 .configure("hibernate_test.cfg.xml")
                 .buildSessionFactory();
-    }
-
-    @BeforeEach
-    void setUp() {
         session = sessionFactory.openSession();
         CrudRepository crudRepository = new CrudRepository(sessionFactory);
         postRepository = new PostRepository(crudRepository);
@@ -53,14 +49,20 @@ class PostRepositoryTest {
         Post recent = new Post();
         recent.setDescription("Recent Toyota with photo");
         recent.setCreated(LocalDateTime.now());
-        recent.setPhoto(new Image());
+
+        Image image = new Image();
+        image.setName("test");
+        image.setPath("test.jpg");
+        recent.setPhoto(image);
+        recent.getPhotos().add(image);
+
         recent.setUser(user);
         recent.setCar(toyota);
         session.persist(recent);
 
         Post old = new Post();
         old.setDescription("Old BMW without photo");
-        old.setCreated(LocalDateTime.now().minusDays(2));
+        old.setCreated(LocalDateTime.now().minusDays(1));
         old.setUser(user);
         old.setCar(bmw);
         session.persist(old);
@@ -129,7 +131,7 @@ class PostRepositoryTest {
         Post post = postRepository.findAll().get(0);
         post.setDescription("Updated description");
         postRepository.update(post);
-
+        session.clear();
         Post updated = session.get(Post.class, post.getId());
         assertEquals("Updated description", updated.getDescription());
     }
@@ -139,6 +141,7 @@ class PostRepositoryTest {
         Post post = postRepository.findAll().get(0);
         int id = post.getId();
         postRepository.delete(id);
+        session.clear();
         Post deleted = session.get(Post.class, id);
         assertNull(deleted);
     }

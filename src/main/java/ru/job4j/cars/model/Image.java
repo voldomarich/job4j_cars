@@ -16,4 +16,3 @@ public class Image {
     private String name;
     private String path;
 }
-
