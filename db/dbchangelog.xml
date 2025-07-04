@@ -5,16 +5,16 @@
         xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-    <include file="scripts/001_create_auto_user.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/002_create_auto_image.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/003_create_auto_post.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/004_create_price_history.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/005_ddl_create_participates_table.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/006_create_auto_engine.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/007_create_auto_car.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/008_create_auto_owners.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/009_create_auto_history_owners.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/010_create_auto_history.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/011_alter_tables_car_owner.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/012_dml_update_auto_user_table.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/001_create_auto_user.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/002_create_auto_image.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/003_create_auto_post.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/004_create_price_history.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/005_ddl_create_participates_table.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/006_create_auto_engine.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/007_create_auto_car.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/008_create_auto_owners.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/009_create_auto_history_owners.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/010_create_auto_history.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/011_alter_tables_car_owner.sql" relativeToChangelogFile="true"/>
+    <include file="db/scripts/012_dml_update_auto_user_table.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

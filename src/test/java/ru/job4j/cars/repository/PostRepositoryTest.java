@@ -60,7 +60,7 @@ class PostRepositoryTest {
 
         Post old = new Post();
         old.setDescription("Old BMW without photo");
-        old.setCreated(LocalDateTime.now().minusDays(2));
+        old.setCreated(LocalDateTime.now().minusDays(1));
         old.setUser(user);
         old.setCar(bmw);
         session.persist(old);
